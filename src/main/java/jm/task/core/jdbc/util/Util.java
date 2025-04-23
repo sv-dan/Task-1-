@@ -1,11 +1,16 @@
 package jm.task.core.jdbc.util;
 
 
+import jm.task.core.jdbc.dao.CustomException;
+import jm.task.core.jdbc.dao.Database;
+import jm.task.core.jdbc.dao.UserDaoHibernateImpl;
 import jm.task.core.jdbc.model.User;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import java.sql.Connection;
@@ -14,18 +19,17 @@ import java.sql.SQLException;
 
 public class Util {
 
-    // реализуйте настройку соеденения с БД
-    private static String url = "jdbc:postgresql://localhost:5432/postgres";
-    private static String user = "postgres";
-    private static String password = "zadedi92";
+    private static final Logger logger = LoggerFactory.getLogger(UserDaoHibernateImpl.class);
+
+
     private static SessionFactory sessionFactory;
 
     public static Connection getConnection() throws SQLException {
-        Connection connection = DriverManager.getConnection(url, user, password);
+        Connection connection = DriverManager.getConnection(Database.URL, Database.USER, Database.PASSWORD);
         if (connection != null) {
-            System.out.println("Подключение к postgreSQL");
+            logger.info("Подключение к postgreSQL");
         } else {
-            System.out.println("Ошибка подключения к postgreSQL");
+            logger.info("Ошибка подключения к postgreSQL");
         }
         return connection;
     }
@@ -36,9 +40,9 @@ public class Util {
             try {
                 Configuration config = new Configuration();
                 config.setProperty("hibernate.connection.driver_class", "org.postgresql.Driver");
-                config.setProperty("hibernate.connection.url", url);
-                config.setProperty("hibernate.connection.username", user);
-                config.setProperty("hibernate.connection.password", password);
+                config.setProperty("hibernate.connection.url", Database.URL);
+                config.setProperty("hibernate.connection.username", Database.USER);
+                config.setProperty("hibernate.connection.password", Database.PASSWORD);
                 config.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
                 config.setProperty("hibernate.show_sql", "true");
                 config.setProperty("hibernate.hbm2ddl.auto", "create");
@@ -49,9 +53,9 @@ public class Util {
                         .build();
 
                 sessionFactory = config.buildSessionFactory(serviceRegistry);
-                System.out.println("sessionFactory для hibernate создан");
-            } catch (Exception e) {
-                System.out.println("sessionFactory для hibernate не создан");
+                logger.info("sessionFactory для hibernate создан");
+            } catch (CustomException e) {
+                logger.info("sessionFactory для hibernate не создан");
                 e.printStackTrace();
             }
             return sessionFactory;
