@@ -1,23 +1,28 @@
 package jm.task.core.jdbc.util;
 
+
+import jm.task.core.jdbc.dao.Database;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+
 public class Util {
 
     // реализуйте настройку соеденения с БД
-    private static String url = "jdbc:postgresql://localhost:5432/postgres";
-    private static String user = "postgres";
-    private static String password = "zadedi92";
+
+    private static final Logger logger = LoggerFactory.getLogger(Util.class);
 
     public static Connection getConnection() throws SQLException {
-        Connection connection = DriverManager.getConnection(url, user, password);
-            if (connection != null) {
-                System.out.println("Подключение к postgreSQL");
-            } else {
-                System.out.println("Ошибка подключения к postgreSQL");
-            }
-            return connection;
+        Connection connection = DriverManager.getConnection(Database.URL, Database.USER, Database.PASSWORD);
+        if (connection != null) {
+            logger.info("Подключение к postgreSQL");
+        } else {
+            logger.info("Ошибка подключения к postgreSQL");
         }
+        return connection;
     }
+}
