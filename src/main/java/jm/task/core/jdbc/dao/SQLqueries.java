@@ -11,7 +11,7 @@ public class SQLqueries {
                                            )
                                           """;
 
-    public static final String DROP_TABLE = "DROP TABLE users";
+    public static final String DROP_TABLE = "DROP TABLE IF EXISTS users";
 
     public static final String INSERT_USER = "INSERT INTO users(name, lastname, age) VALUES(?, ?, ?)";
 

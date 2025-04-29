@@ -2,15 +2,15 @@ package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class UserDaoJDBCImpl implements UserDao {
-    private final static Logger logger = LoggerFactory.getLogger(UserDaoJDBCImpl.class);
+
     public UserDaoJDBCImpl() {
 
     }
@@ -19,9 +19,9 @@ public class UserDaoJDBCImpl implements UserDao {
         String createTable = SQLqueries.CREATE_TABLE;
         try (Connection connection = Util.getConnection();
              Statement statement = connection.createStatement()) {
-            logger.info(String.valueOf(statement.execute(createTable)));
+            log.info(String.valueOf(statement.execute(createTable)));
         } catch (CustomException | SQLException e) {
-            e.printStackTrace();
+            throw new CustomException(e.getMessage());
         }
     }
 
@@ -30,9 +30,9 @@ public class UserDaoJDBCImpl implements UserDao {
         try (Connection connection = Util.getConnection();
              Statement statement = connection.createStatement()) {
             statement.execute(dropTable);
-            logger.info("Таблица 'users' успешно удалена (или не существовала).");
+            log.info("Таблица 'users' успешно удалена (или не существовала).");
         } catch (CustomException | SQLException e) {
-            e.printStackTrace();
+            throw new CustomException(e.getMessage());
         }
     }
 
@@ -44,10 +44,10 @@ public class UserDaoJDBCImpl implements UserDao {
             preparedStatement.setString(2, lastName);
             preparedStatement.setByte(3, age);
             preparedStatement.execute();
-            logger.info("User с именем - " + name + " добавлен в базу данных");
+            log.info("User с именем - " + name + " добавлен в базу данных");
 
         } catch (CustomException | SQLException e) {
-            e.printStackTrace();
+            throw new CustomException(e.getMessage());
         }
 
     }
@@ -60,13 +60,13 @@ public class UserDaoJDBCImpl implements UserDao {
             int result = preparedStatement.executeUpdate();
 
             if (result > 0) {
-                logger.info("Пользователь с id = " + id + " удален из базы");
+                log.info("Пользователь с id = " + id + " удален из базы");
             } else {
-               logger.info("Пользователь с id = " + id + " не найден в базе");
+               log.info("Пользователь с id = " + id + " не найден в базе");
             }
         } catch (CustomException | SQLException e) {
-            System.out.println("Ошибка при удаление пользователя с id = " + id + ":");
-            e.printStackTrace();
+            log.info("Ошибка при удаление пользователя с id = " + id + ":");
+            throw new CustomException(e.getMessage());
         }
 
     }
@@ -86,10 +86,10 @@ public class UserDaoJDBCImpl implements UserDao {
                 users.add(user);
             }
         } catch (CustomException | SQLException e) {
-            e.printStackTrace();
+            throw new CustomException(e.getMessage());
         }
         for (User user : users) {
-            logger.info("User: {}", user);
+            log.info("User: {}", user);
         }
         return users;
     }
@@ -100,7 +100,7 @@ public class UserDaoJDBCImpl implements UserDao {
              Statement statement = connection.createStatement()) {
             statement.executeUpdate(cleanTable);
         } catch (CustomException | SQLException e) {
-            e.printStackTrace();
+            throw new CustomException(e.getMessage());
         }
     }
 }
