@@ -1,32 +1,34 @@
 package jm.task.core.jdbc.dao;
 
 
+
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
-
-
 @Slf4j
-public class PropertiesUtil {
-    public static final Properties INSTANCE = new Properties();
+public final class PropertiesUtil {
+
+    private static final Properties PROPERTIES = new Properties();
+
     static {
         loadProperties();
     }
-     private PropertiesUtil(){
-     }
 
-     public static String getProperty(String key){
-        return INSTANCE.getProperty(key);
-     }
+    private static void loadProperties() {
+        try {
+            InputStream inputStream = PropertiesUtil.class.getClassLoader()
+                    .getResourceAsStream("application.properties");
+            PROPERTIES.load(inputStream);
+            log.info("Properties успешно загружены");
+        } catch (CustomException | IOException e) {
+            throw new CustomException("Не удалось загрузить properties");
+        }
+    }
 
-     private static void loadProperties() {
-       try (var inputStream = PropertiesUtil.class.getClassLoader().getResourceAsStream("application.propierties")){
-           INSTANCE.load(inputStream);
-           log.info("load properties успешно загружен");
-         }catch (Exception e){
-           throw new RuntimeException(e);
-       }
-     }
-
+    public static String get(String key) {
+        return PROPERTIES.getProperty(key);
+    }
 }

@@ -9,5 +9,5 @@ public class SQLqueries {
                                               age SMALLINT
                                            )
                                           """;
-    public static final String DROP_TABLE = "DROP TABLE users";
+    public static final String DROP_TABLE = "DROP TABLE IF EXISTS users";
 }

@@ -1,29 +1,28 @@
 package jm.task.core.jdbc;
 
-import jm.task.core.jdbc.dao.UserDaoHibernateImpl;
-import jm.task.core.jdbc.dao.UserDaoJDBCImpl;
+
 import jm.task.core.jdbc.service.UserServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 
+@Slf4j
 public class Main {
     public static void main(String[] args) {
-        final Logger logger = LoggerFactory.getLogger(UserDaoHibernateImpl.class);
 
         UserServiceImpl dao = new UserServiceImpl();
         dao.createUsersTable();
-        logger.info("");
+        log.info("");
         dao.saveUser("Петя", "Бобров", (byte) 69);
         dao.saveUser("Маша", "Сидорова", (byte) 52);
         dao.saveUser("Евгений", "Михайлов", (byte) 41);
         dao.saveUser("Дима", "Дубров", (byte) 19);
-        logger.info("");
+        log.info("");
         dao.getAllUsers();
-        logger.info("");
+        log.info("");
         dao.cleanUsersTable();
-        logger.info("");
+        log.info("");
         dao.dropUsersTable();
+
 
 
     }
